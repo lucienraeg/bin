@@ -1,0 +1,133 @@
+/* colors from Material Design's Orange */
+
+header {
+	background-color: #EF6C00;
+	overflow: hidden;
+
+	padding-left: 10px;
+}
+
+.header-cont {
+	margin: auto;
+	width: 988px;
+	padding: 0px;
+}
+
+header h1 {
+	font-size: 12px;
+	margin: 16px 8px 16px 0px;
+
+	text-align: left;
+	font-weight: normal;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+header h1 b {
+	font-size: 30px;
+	color: rgba(255, 255, 255, 1);
+}
+
+body {
+	background-color: white;
+	font-family: "Roboto", sans-serif;
+	margin: 0;
+}
+
+.feature-cont {
+	margin: auto;
+	background: linear-gradient(to right, #FB8C00, #FFA726);
+	background-size: cover;
+	padding: 36px;
+
+	box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+}
+
+.feature-cont h1 {
+	font-size: 30px;
+
+	text-align: left;
+	font-weight: normal;
+	color: rgba(255, 255, 255, 1);
+}
+
+.feature-cont p {
+	font-size: 20px;
+
+	text-align: left;
+	font-weight: normal;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.feature-cont p b {
+	color: rgba(255, 255, 255, 1);
+	font-weight: 500;
+}
+
+.feature-cont p a {
+	text-decoration: none
+	color: #ff4c20
+	font-weight: 600;
+}
+
+.feature-content-cont .button {
+	background-color: #1772F1;
+	border: 2px solid;
+	border-color: #1772F1;
+	border-radius: 4px;
+	color: white;
+	padding: 10px 14px;
+	text-align: center;
+	text-decoration: none;
+	font-size: 16px;
+	cursor: pointer;
+	font-weight: 700;
+
+	box-shadow: 0px 0px 8px rgba(110, 110, 110, 0.5);
+}
+
+.feature-image-cont {
+	margin-top: 25px;
+	margin-right: 20px;
+}
+
+.feature-content-cont {
+	margin: auto;
+	width: 976px;
+	padding: 10px 10px 10px 10px;
+
+	text-align: left;
+	font-weight: normal;
+}
+
+.main {
+	margin: auto;
+	width: 988px;
+	padding: 36px;
+}
+
+.main h1 {
+	font-size: 30px;
+
+	text-align: center;
+	font-weight: normal;
+	color: rgba(0, 0, 0, 0.7);
+}
+
+.main p {
+	font-size: 20px;
+
+	text-align: left;
+	font-weight: normal;
+	color: rgba(0, 0, 0, 0.7);
+}
+
+.main p b {
+	color: rgba(0, 0, 0, 1);
+	font-weight: 500;
+}
+
+.main p a {
+	text-decoration: none
+	color: #ff4c20
+	font-weight: 600;
+}
