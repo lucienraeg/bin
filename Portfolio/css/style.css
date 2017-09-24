@@ -1,0 +1,43 @@
+/*
+navy-blue: #191E2F;
+dark-navy-blue: #151928;
+orange: #EB5C2F;
+yellow: #FFC93F;
+gray: #797880;
+*/
+
+html, body {
+    font-family: Consolas, monospace;
+    background: #191E2F;
+    padding: 0;
+    margin: 0;
+}
+
+.main {
+	margin: 96px auto;
+}
+
+#entry {
+	border-top: 1px dashed #797880;
+	margin: 0 auto;
+	background-color: #151928;
+	overflow: hidden;
+	max-width: 760px;
+	padding: 48px;
+}
+
+.main h1 {
+	font-size: 32px;
+	font-weight: normal;
+	margin: 0;
+	padding: 0 0 12px 0;
+	color: #EB5C2F;
+}
+
+.main p {
+	font-size: 16px;
+	line-height: 18px;
+	margin: 0;
+	padding: 0;
+	color: rgba(255, 255, 255, 0.6);
+}
