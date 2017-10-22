@@ -4,17 +4,21 @@ import agents
 import display
 
 def main():
-	general_info = {"paused": paused}
-	display.main(general_info)
+	display.main()
 
-	display.display_agent_panel(0, 56, agent_list)
+	for agent in agent_list:
+		display.display_agent(agent)
+
+	display.display_info_panel(0, 0, None, FPS=round(display.clock.get_fps(), 2), Paused=paused, 
+		MousePos=tuple(pygame.mouse.get_pos()), Offset=(display.world_offset_x, display.world_offset_y))
+	display.display_agent_panel(0, 72, agent_list)
 
 	display.update_display()
 
 if __name__ == "__main__":
 	agent_list = []
 	for i in range(35):
-		new_agent = agents.Agent(i, random.randint(0, 16), random.randint(0, 16))
+		new_agent = agents.Agent(i, random.randint(0, 1280), random.randint(0, 1280))
 		agent_list.append(new_agent)
 	print("{} agents created".format(len(agent_list)))
 
