@@ -1,4 +1,5 @@
 import pygame
+import numpy as np
 import math
 
 pygame.init()
@@ -10,128 +11,42 @@ color = {"white": (255, 255, 255),
 "lt_gray": (200, 200, 200),
 "gray": (150, 150, 150),
 "black": (0, 0, 0),
-"red": (255, 0, 0),
-"lime": (0, 255, 0),
-"blue": (0, 0, 255)}
+"red": (255, 0, 0)}
 
-font = {"small": pygame.font.SysFont("couriernew", 12)}
+font = {"small": pygame.font.SysFont("arial", 14)}
 
-focus = None
-world_offset_x, world_offset_y = 0, 0 
-
-dragging = False
-drag_from_x, drag_from_y = 0, 0
-drag_offset_x, drag_offset_y = 0, 0
+def extend_direction(x1, y1, angle, d):
+	theta_rad = np.radians(-angle)
+	return x1 + d*np.cos(theta_rad), y1 + d*np.sin(theta_rad)
 
 def point_distance(x1, y1, x2, y2):
-	return math.sqrt(abs(x1-x2)**2 + abs(y1-y2)**2)
+	return np.sqrt(abs(x1 - x2)**2 + abs(y1 - y2)**2)
 
-def display_info_panel(x, y, title, **info):
-	y_offset = (0, 14)[title != None]
-	w, h = 180, len(info)*16+8+y_offset
-	value_offset = max([len(str(key)) for key in list(info)])*8+8
+def point_direction(x1, y1, x2, y2, offset=0):
+	return (180 - offset - np.rad2deg(np.arctan2(y1 - y2, x1 - x2))) % 360
 
-	pygame.draw.rect(display, color["black"], (x+2, y+2, w-4, h-4))
-	pygame.draw.rect(display, color["white"], (x+2, y+2, w-4, h-4), 2)
+def display_agent(a):
+	# sensors
+	for i, sensor in enumerate(a.sensors):
+		col = (color["gray"], color["red"])[len(sensor.detected) > 0]
+		x2, y2 = extend_direction(a.x, a.y, a.angle+sensor.angle, sensor.length)
+		pygame.draw.line(display, col, (a.x, a.y), (x2, y2), (1, 2)[i == len(a.sensors) // 2])
 
-	if title != None:
-		pygame.draw.rect(display, color["white"], (x+2, y+2, w-4, 16))
-		text = font["small"].render("{}".format(title), True, color["black"])
-		display.blit(text, (x+7, y+4))
+	# body
+	pygame.draw.circle(display, color["lt_gray"], (a.x, a.y), 12)
+	pygame.draw.circle(display, color["black"], (a.x, a.y), 12, 2)
 
-	for i, key in enumerate(info):
-		value = info[key]
-		text = font["small"].render("{}".format(key), True, color["lt_gray"])
-		display.blit(text, (x+7, y+6+i*16+y_offset))
+	# label
+	text = font["small"].render("{}".format(a.index), True, color["red"])
+	display.blit(text, text.get_rect(center=(a.x, a.y)))
 
-		col = color["white"]
-		if type(value) == bool:
-			col = (color["red"], color["lime"])[value]
+	# debug info
+	text = font["small"].render("{}".format([sensor.detected for sensor in a.sensors]), True, color["black"])
+	display.blit(text, text.get_rect(center=(a.x, a.y+32)))
 
-		text = font["small"].render("{}".format(value), True, col)
-		display.blit(text, (x+7+value_offset, y+6+i*16+y_offset))
-
-def display_agent_panel(x, y, agents):
-	global focus
-
-	if focus == None:
-		display_agent_list(x, y, agents)
-	else:
-		display_info_panel(x, y, "Agent #{}".format(focus.index), Pos=(focus.x, focus.y))
-
-def display_agent_list(x, y, agents):
-	global focus
-
-	mouse_x, mouse_y = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()[0]
-
-	w, h = 180, 50+((len(agents)-1) // 7)*24
-
-	pygame.draw.rect(display, color["black"], (x+2, y+2, w-4, h-4))
-	pygame.draw.rect(display, color["white"], (x+2, y+2, w-4, h-4), 2)
-
-	pygame.draw.rect(display, color["white"], (x+2, y+2, w-4, 16))
-	text = font["small"].render("{}".format("Agents"), True, color["black"])
-	display.blit(text, (x+7, y+4))
-
-	for i, agent in enumerate(agents):
-		xx = x+7+(i % 7)*24
-		yy = y+21+(i // 7)*24
-
-		hover = xx < mouse_x < xx+22 and yy < mouse_y < yy+22
-
-		col = (color["gray"], color["white"])[hover]
-		pygame.draw.rect(display, col, (xx, yy, 22, 22), 2)
-
-		text = font["small"].render("{}".format(agent.index), True, color["white"])
-		text_rect = text.get_rect(center=(xx+11, yy+11))
-		display.blit(text, text_rect)
-
-		if hover and click:
-			focus = agent
-
-def display_agent(agent):
-	global focus
-
-	mouse_x, mouse_y = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()[0]
-
-	a_x = agent.x+world_offset_x
-	a_y = agent.y+world_offset_y
-
-	pygame.draw.circle(display, color["white"], (a_x, a_y), 4)
-
-	if agent == focus:
-		pygame.draw.rect(display, color["red"], (a_x-8, a_y-8, 16, 16), 2)
-		text = font["small"].render("{}".format(agent.index), True, color["red"])
-		text_rect = text.get_rect(center=(a_x, a_y-16))
-		display.blit(text, text_rect)
-	else:
-		if point_distance(a_x, a_y, mouse_x, mouse_y) < 8 and click:
-			focus = agent
 
 def main():
-	global dragging, drag_from_x, drag_from_y, drag_offset_x, drag_offset_y, world_offset_x, world_offset_y
-
-	display.fill(color["black"])
-
-	# dragging
-	mouse_x, mouse_y = pygame.mouse.get_pos()
-	click = pygame.mouse.get_pressed()[0]
-
-	if click and not dragging and mouse_x > 180:
-		drag_from_x = mouse_x
-		drag_from_y = mouse_y
-		dragging = 1
-	if not click or mouse_x < 180:
-		drag_offset_x = world_offset_x
-		drag_offset_y = world_offset_y
-		dragging = 0
-	if dragging:
-		world_offset_x = mouse_x-drag_from_x+drag_offset_x
-		world_offset_y = mouse_y-drag_from_y+drag_offset_y
-
-
+	display.fill(color["white"])
 
 def update_display():
 	pygame.display.set_caption("FPS: {}".format(round(clock.get_fps(), 2)))
